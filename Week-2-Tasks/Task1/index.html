@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Appointment Management System</title>
+</head>
+<body>
+    <header>
+        <h1>Doctor Appointment Management System</h1>
+        <nav>
+            <ul>
+                <li><a href="#book-appointment">Book Appointment</a></li>
+                <li><a href="#available-doctors">Available Doctors</a></li>
+                <li><a href="#faqs">FAQs</a></li>
+                <li><a href="#contact-us">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="book-appointment">
+            <h2>Book an Appointment</h2>
+            <form action="#" method="post">
+                <fieldset>
+                    <legend>Patient Information</legend>
+                    <div>
+                        <label for="patient-name">Name:</label>
+                        <input type="text" id="patient-name" name="patient-name" required>
+                    </div>
+                    <div>
+                        <label for="patient-email">Email:</label>
+                        <input type="email" id="patient-email" name="patient-email" required>
+                    </div>
+                    <div>
+                        <label for="patient-phone">Phone:</label>
+                        <input type="tel" id="patient-phone" name="patient-phone">
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Appointment Details</legend>
+                    <div>
+                        <label for="appointment-date">Date:</label>
+                        <input type="date" id="appointment-date" name="appointment-date" required>
+                    </div>
+                    <div>
+                        <label for="appointment-time">Time:</label>
+                        <input type="time" id="appointment-time" name="appointment-time" required>
+                    </div>
+                    <div>
+                        <label for="doctor">Choose a Doctor:</label>
+                        <select id="doctor" name="doctor">
+                            <option value="dr-smith">Dr. Smith</option>
+                            <option value="dr-jones">Dr. Jones</option>
+                            <option value="dr-williams">Dr. Williams</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Preferred Contact Method:</label>
+                        <input type="radio" id="contact-email" name="contact-method" value="email" checked>
+                        <label for="contact-email">Email</label>
+                        <input type="radio" id="contact-phone" name="contact-method" value="phone">
+                        <label for="contact-phone">Phone</label>
+                    </div>
+                    <div>
+                        <label for="symptoms">Symptoms:</label>
+                        <textarea id="symptoms" name="symptoms" rows="4" cols="50"></textarea>
+                    </div>
+                </fieldset>
+                <div>
+                    <button type="submit">Submit</button>
+                    <button type="reset">Reset</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="available-doctors">
+            <h2>Available Doctors</h2>
+            <table>
+                <caption>Doctor List</caption>
+                <thead>
+                    <tr>
+                        <th>Doctor Name</th>
+                        <th>Specialization</th>
+                        <th>Contact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dr. Smith</td>
+                        <td>Cardiologist</td>
+                        <td><a href="mailto:drsmith@example.com">drsmith@example.com</a></td>
+                    </tr>
+                    <tr>
+                        <td>Dr. Jones</td>
+                        <td>Dermatologist</td>
+                        <td><a href="mailto:drjones@example.com">drjones@example.com</a></td>
+                    </tr>
+                    <tr>
+                        <td>Dr. Williams</td>
+                        <td>Neurologist</td>
+                        <td><a href="mailto:drwilliams@example.com">drwilliams@example.com</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="faqs">
+            <h2>FAQs</h2>
+            <details>
+                <summary>How to book an appointment?</summary>
+                <p>You can book an appointment by filling out the form in the 'Book an Appointment' section.</p>
+            </details>
+            <details>
+                <summary>What are the available timings?</summary>
+                <p>Appointments are available from 9 AM to 5 PM, Monday to Friday.</p>
+            </details>
+            <details>
+                <summary>How to contact doctors?</summary>
+                <p>You can contact doctors via email as provided in the 'Available Doctors' section.</p>
+            </details>
+        </section>
+
+        <section id="contact-us">
+            <h2>Contact Us</h2>
+            <address>
+                <p>Doctor Appointment Management System</p>
+                <p>123 Health St, Wellness City, HC 12345</p>
+                <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+                <p>Phone: (123) 456-7890</p>
+            </address>
+            <section>
+                <h3>Follow Us</h3>
+                <ul>
+                    <li><a href="https://www.facebook.com">Facebook</a></li>
+                    <li><a href="https://www.twitter.com">Twitter</a></li>
+                    <li><a href="https://www.instagram.com">Instagram</a></li>
+                </ul>
+            </section>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Doctor Appointment Management System</p>
+    </footer>
+</body>
+</html>
