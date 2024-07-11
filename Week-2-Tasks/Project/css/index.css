@@ -9,7 +9,7 @@ body {
 }
 
 header {
-    background-color: #0073e6;
+    background-color: #0051a2;
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -37,6 +37,15 @@ header {
 .company-name {
     font-size: 24px;
     font-weight: bold;
+}
+
+.navbar-heading {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+    /* line-height: 0; */
+    /* background-color: #999; */
 }
 
 /* Main menu styles */
@@ -135,7 +144,8 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0073e6;
+    /* background-color: #0073e6; */
+    background-color: #296198;
     padding: 20px;
     color: white;
     position: relative;
@@ -149,7 +159,7 @@ header {
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #0073e6;
+        background-color: #296198;
         padding: 20px;
         color: white;
         position: relative;
@@ -552,7 +562,7 @@ header {
 
 
 footer {
-    background-color: #0073e6;
+    background-color: #0051a2;
     color: white;
     padding: 20px 0;
     text-align: center;

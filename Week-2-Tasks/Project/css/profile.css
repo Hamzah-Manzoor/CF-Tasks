@@ -9,7 +9,7 @@ body {
 }
 
 header {
-    background-color: #0073e6;
+    background-color: #0051a2;
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -189,7 +189,7 @@ button:hover {
 }
 
 footer {
-    background-color: #0073e6;
+    background-color: #0051a2;
     color: white;
     padding: 20px 0;
     text-align: center;

@@ -37,7 +37,7 @@ function showPrevSlide() {
 document.getElementById('next').addEventListener('click', showNextSlide);
 document.getElementById('prev').addEventListener('click', showPrevSlide);
 
-setInterval(showNextSlide, 2000);
+setInterval(showNextSlide, 3500);
 
 showSlide(currentIndex);
 
