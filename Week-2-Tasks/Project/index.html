@@ -4,83 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Company Employee Portal</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <!-- Header Section -->
     <header>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <img src="path/to/company-logo.png" alt="Company Logo" style="height: 50px;">
-                <span>Company Name</span>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="assets/codefulcrum_logo.jpeg" alt="Company Logo" class="company-logo">
+                <span class="company-name">Code Fulcrum</span>
             </div>
-            <nav>
+            <nav class="main-menu">
                 <ul>
-                    <li><a href="update-profile.html">Update Profile</a></li>
-                    <li><a href="logout.html">Logout</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="leaves.html">Leaves</a></li>
+                    <li><a href="profile.html">Profile</a></li>
                 </ul>
             </nav>
+            <div class="profile-icon-container">
+                <i class="fas fa-user-circle profile-icon" id="profile-icon"></i>
+                <nav class="profile-menu" id="profile-menu">
+                    <ul>
+                        <li><a href="profile.html">Update Profile</a></li>
+                        <li><a href="login.html">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </header>
 
+    <!-- Divider -->
+    <hr class="divider">
+
     <!-- Hero Section with Slider -->
-    <section aria-label="Hero Section">
-        <div>
-            <figure>
-                <img src="path/to/image1.jpg" alt="Image 1">
-                <figcaption>Image 1 Description</figcaption>
-            </figure>
-            <figure>
-                <img src="path/to/image2.jpg" alt="Image 2">
-                <figcaption>Image 2 Description</figcaption>
-            </figure>
-            <figure>
-                <img src="path/to/image3.jpg" alt="Image 3">
-                <figcaption>Image 3 Description</figcaption>
-            </figure>
+    <section aria-label="Hero Section" class="hero-section">
+        <div class="slider" id="slider">
+            <div class="slide" data-index="0">
+                <img src="assets/hero_section_1_final.png" alt="Image 1">
+            </div>
+            <div class="slide" data-index="1">
+                <img src="assets/hero_section_2_final.png" alt="Image 2">
+            </div>
+            <div class="slide" data-index="2">
+                <img src="assets/hero_section_3_final.png" alt="Image 3">
+            </div>
+        </div>
+        <div class="controls">
+            <button id="prev">&lt;</button>
+            <button id="next">&gt;</button>
         </div>
     </section>
 
     <!-- Cards Section -->
-    <main>
+    <main class="cards-section">
         <!-- Upcoming Events and Announcements Card -->
-        <article>
+        <article class="card">
             <h2>Upcoming Events and Announcements</h2>
-            <p>Stay tuned for the latest updates and events.</p>
-            <button onclick="window.location.href='events.html'">View All Events</button>
+
+            <div class="events-section">
+                <h3>Upcoming Events</h3>
+                <ul>
+                    <li><strong>Project Kickoff Meeting:</strong> July 20, 2024 at 10:00 AM</li>
+                    <li><strong>Team Building Activity:</strong> July 25, 2024 at 2:00 PM</li>
+                    <!-- Add more events as needed -->
+                </ul>
+            </div>
+
+            <div class="announcements-section">
+                <h3>Announcements</h3>
+                <ul>
+                    <li><strong>New HR Policies:</strong> Effective July 15, 2024</li>
+                    <li><strong>Office Closure:</strong> July 30, 2024 for Maintenance</li>
+                    <!-- Add more announcements as needed -->
+                </ul>
+            </div>
+
+            <div class="view-all-events">
+                <button onclick="window.location.href='events.html'">View All Events</button>
+            </div>
         </article>
 
-        <!-- Leave Details Card -->
-        <article>
+
+        <!-- Annual Leave Details Card -->
+        <article class="card annual-leaves-card">
             <h2>Annual Leave Details</h2>
-            <dl>
-                <dt>Total Annual Leaves:</dt>
-                <dd>30</dd>
-                <dt>Leaves Taken:</dt>
-                <dd>10</dd>
-                <dt>Remaining Leaves:</dt>
-                <dd>20</dd>
-            </dl>
-            <button onclick="window.location.href='leaves.html'">Apply For Leave</button>
+            <div class="leave-details">
+                <div class="leave-item">
+                    <span class="leave-title">Total Annual Leaves:</span>
+                    <span class="leave-value">30</span>
+                </div>
+                <div class="leave-item">
+                    <span class="leave-title">Leaves Taken:</span>
+                    <span class="leave-value">10</span>
+                </div>
+                <div class="leave-item">
+                    <span class="leave-title">Remaining Leaves:</span>
+                    <span class="leave-value">20</span>
+                </div>
+            </div>
+            <div class="apply-leave-container">
+                <button onclick="window.location.href='leaves.html'">Apply For Leave</button>
+            </div>
         </article>
+
 
         <!-- Upcoming Birthdays Card -->
-        <article>
+        <article class="card">
             <h2>Upcoming Birthdays</h2>
-            <ul>
-                <li>John Doe - July 15</li>
-                <li>Jane Smith - July 20</li>
+            <ul class="birthday-list">
+                <li>
+                    <!-- <img src="assets/profile_placeholder.png" alt="Profile Icon" class="profile-icon"> -->
+                    <i class="fas fa-user-circle profile-icon2" id="profile-icon"></i>
+                    <div class="birthday-info">
+                        <span class="birthday-name">John Doe</span>
+                        <span class="birthday-position">Software Engineer</span>
+                        <span class="birthday-date">July 15</span>
+                    </div>
+                </li>
+                <li>
+                    <!-- <img src="assets/profile_placeholder.png" alt="Profile Icon" class="profile-icon"> -->
+                    <i class="fas fa-user-circle profile-icon2" id="profile-icon"></i>
+                    <div class="birthday-info">
+                        <span class="birthday-name">Jane Smith</span>
+                        <span class="birthday-position">Project Manager</span>
+                        <span class="birthday-date">July 20</span>
+                    </div>
+                </li>
                 <!-- Add more as needed -->
             </ul>
         </article>
 
+
         <!-- Lunch Menu Card -->
-        <article>
+        <article class="card">
             <h2>Lunch Menu</h2>
-            <p>Today's Menu: Grilled Chicken, Salad, Rice</p>
-            <p>Lunch Time: 12:30 PM - 1:30 PM</p>
-            <button>👍 Like <span>10</span></button>
-            <button>👎 Dislike <span>2</span></button>
+            <div class="lunch-menu-content">
+                <div class="menu-item">
+                    <i class="fas fa-utensils"></i>
+                    <div>
+                        <p><strong>Today's Menu:</strong></p>
+                        <p>Grilled Chicken, Salad, Rice</p>
+                    </div>
+                </div>
+                <div class="menu-time">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <p><strong>Lunch Time:</strong></p>
+                        <p>12:30 PM - 1:30 PM</p>
+                    </div>
+                </div>
+            </div>
+            <div class="reaction-buttons">
+                <button class="like-button" onclick="incrementCount('like')">
+                    <i class="fas fa-thumbs-up"></i> Like <span id="like-count">10</span>
+                </button>
+                <button class="dislike-button" onclick="incrementCount('dislike')">
+                    <i class="fas fa-thumbs-down"></i> Dislike <span id="dislike-count">2</span>
+                </button>
+            </div>
         </article>
+
+
     </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <p>&copy; 2024 Code Fulcrum. All rights reserved.</p>
+            </div>
+            <div class="footer-right">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+    
+
+    <!-- JavaScript -->
+    <script src="js/index.js"></script>
 </body>
 </html>
