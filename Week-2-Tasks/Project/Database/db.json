@@ -9,7 +9,7 @@
       "employeeId": "E001",
       "birthdate": "2001-08-05",
       "totalAnnualLeaves": 30,
-      "leavesTaken": 14
+      "leavesTaken": 10
     },
     {
       "id": "2",
@@ -31,46 +31,6 @@
       "endDate": "2024-08-15",
       "reason": "Vacation",
       "leaveType": "annual"
-    },
-    {
-      "id": "9d9f",
-      "employeeId": "E001",
-      "startDate": "2024-07-18",
-      "endDate": "2024-07-19",
-      "reason": "kgrgjkw gkw4 ho",
-      "leaveType": "maternity"
-    },
-    {
-      "id": "ba9f",
-      "employeeId": "EM001",
-      "startDate": "2024-07-26",
-      "endDate": "2024-07-26",
-      "reason": "This is a final test.",
-      "leaveType": "sick"
-    },
-    {
-      "id": "32ae",
-      "employeeId": "E001",
-      "startDate": "2024-07-26",
-      "endDate": "2024-07-29",
-      "reason": "This should be accepted.",
-      "leaveType": "emergency"
-    },
-    {
-      "id": "5305",
-      "employeeId": "E001",
-      "startDate": "2024-07-20",
-      "endDate": "2024-07-22",
-      "reason": "I have two leaves.",
-      "leaveType": "emergency"
-    },
-    {
-      "id": "59cf",
-      "employeeId": "E001",
-      "startDate": "2024-07-28",
-      "endDate": "2024-07-28",
-      "reason": "I have one leave.",
-      "leaveType": "emergency"
     }
   ],
   "events": [
