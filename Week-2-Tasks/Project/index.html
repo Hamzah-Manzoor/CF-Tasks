@@ -224,8 +224,6 @@
 
     </main>
 
-    <div id="employee-list"></div>
-
     <footer>
         <div class="footer-container">
             <div class="footer-left">
@@ -241,27 +239,6 @@
 
     <!-- JavaScript -->
     <script src="js/index.js"></script>
-
-    <script>
-        fetch('http://localhost:3000/employees')
-            .then(response => response.json())
-            .then(data => {
-                const employeeList = document.getElementById('employee-list');
-                data.forEach(employee => {
-                    const employeeItem = document.createElement('div');
-                    employeeItem.innerHTML = `
-                        <h2>${employee.name}</h2>
-                        <p>Email: ${employee.email}</p>
-                        <p>Position: ${employee.position}</p>
-                        <p>Date of Joining: ${employee.dateOfJoining}</p>
-                        <p>Employee ID: ${employee.employeeId}</p>
-                        <p>Birthdate: ${employee.birthdate}</p>
-                    `;
-                    employeeList.appendChild(employeeItem);
-                });
-            })
-            .catch(error => console.error('Error:', error));
-    </script>
 
     <!-- Fetching the name of the employee to display it on Header -->
     <script>
