@@ -44,8 +44,8 @@
     <main class="main-section">
         <h1>Apply for Leave</h1>
         <form id="leave-form">
-            <label for="employee-name">Employee Name:</label>
-            <input type="text" id="employee-name" name="employee-name" required>
+            <!-- <label for="employee-name">Employee Name:</label>
+            <input type="text" id="employee-name" name="employee-name" required> -->
 
             <label for="employee-id">Employee ID:</label>
             <input type="text" id="employee-id" name="employee-id" required>
@@ -88,5 +88,91 @@
 
     <!-- JavaScript -->
     <script src="js/leaves.js"></script>
+
+    <!-- This is the code to add an entry for leave -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const leaveForm = document.getElementById('leave-form');
+            let isSubmitting = false; // Flag to prevent multiple submissions
+    
+            leaveForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+    
+                if (isSubmitting) {
+                    return; // Prevent multiple submissions
+                }
+    
+                isSubmitting = true;
+    
+                const formData = new FormData(leaveForm);
+                const employeeId = formData.get('employee-id');
+    
+                // Check if the employee exists
+                fetch(`http://localhost:3000/employees?employeeId=${employeeId}`)
+                    .then(response => response.json())
+                    .then(employees => {
+                        if (employees.length === 0) {
+                            alert('Employee ID does not exist');
+                            isSubmitting = false; // Reset the flag
+                            return;
+                        }
+    
+                        const newLeave = {
+                            employeeId: employeeId,
+                            startDate: formData.get('start-date'),
+                            endDate: formData.get('end-date'),
+                            reason: formData.get('reason'),
+                            leaveType: formData.get('leave-type')
+                        };
+    
+                        // Make the POST request to add the leave
+                        fetch('http://localhost:3000/leaves', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(newLeave)
+                        })
+                        .then(response => response.json())
+                        .then(leave => {
+                            const employee = employees[0];
+                            const employeeId = employee.id;  // Get the employee's unique ID
+                            const leaveDays = Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1;
+                            const totalLeavesTaken = employee.leavesTaken + leaveDays;
+    
+                            //console.log(`Employee found: ${employee.name} (ID: ${employeeId}), Total Leaves Taken: ${totalLeavesTaken}`);
+    
+                            // Update the employee's leave taken count
+                            return fetch(`http://localhost:3000/employees/${employeeId}`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ leavesTaken: totalLeavesTaken })
+                            });
+                        })
+                        .then(() => {
+                            alert('Leave submitted successfully');
+                            leaveForm.reset();
+                            isSubmitting = false; // Reset the flag after successful submission
+                        })
+                        .catch(error => {
+                            console.error('Error submitting leave:', error);
+                            isSubmitting = false; // Reset the flag in case of an error
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error checking employee ID:', error);
+                        isSubmitting = false; // Reset the flag in case of an error
+                    });
+            });
+        });
+    </script>
+    
+    
+
+    
+
+
 </body>
 </html>

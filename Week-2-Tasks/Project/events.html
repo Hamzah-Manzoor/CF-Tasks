@@ -46,44 +46,18 @@
         <h1>Upcoming Events and Announcements</h1>
         <section class="events-section">
             <h2>Upcoming Events</h2>
-            <div class="event-card">
-                <h3>Annual Team Building Activity</h3>
-                <p><strong>Date:</strong> July 20, 2024</p>
-                <p><strong>Time:</strong> 10:00 AM - 4:00 PM</p>
-                <p><strong>Details:</strong> Join us for a day of fun activities designed to build team cohesion and foster a collaborative work environment. Lunch and refreshments will be provided.</p>
-            </div>
-            <div class="event-card">
-                <h3>Quarterly Business Review</h3>
-                <p><strong>Date:</strong> August 15, 2024</p>
-                <p><strong>Time:</strong> 2:00 PM - 5:00 PM</p>
-                <p><strong>Details:</strong> The management will present the business performance for the last quarter. Employees are encouraged to participate and share their thoughts and feedback.</p>
-            </div>
-            <div class="event-card">
-                <h3>Hackathon</h3>
-                <p><strong>Date:</strong> September 10, 2024</p>
-                <p><strong>Time:</strong> 9:00 AM - 9:00 PM</p>
-                <p><strong>Details:</strong> A full-day coding event where teams compete to solve problems and build innovative solutions. Prizes will be awarded to the top three teams.</p>
+            <div id="events-container">
+                <!-- Dynamic events will be inserted here -->
             </div>
         </section>
         <section class="announcements-section">
             <h2>Announcements</h2>
-            <div class="announcement-card">
-                <h3>Office Renovation</h3>
-                <p><strong>Date:</strong> July 25, 2024</p>
-                <p><strong>Details:</strong> The office will undergo renovations to improve facilities. Temporary workspace arrangements will be provided. Please cooperate with the administration during this period.</p>
-            </div>
-            <div class="announcement-card">
-                <h3>New Health Insurance Policy</h3>
-                <p><strong>Date:</strong> August 1, 2024</p>
-                <p><strong>Details:</strong> Our company has updated the health insurance policy to provide better coverage. Details will be shared in an upcoming meeting. Please review the policy documents sent via email.</p>
-            </div>
-            <div class="announcement-card">
-                <h3>Remote Work Policy</h3>
-                <p><strong>Date:</strong> September 1, 2024</p>
-                <p><strong>Details:</strong> Starting next month, employees can opt for remote work up to two days a week. Please discuss with your manager to plan your schedule accordingly.</p>
+            <div id="announcements-container">
+                <!-- Dynamic announcements will be inserted here -->
             </div>
         </section>
     </main>
+
 
     <footer>
         <div class="footer-container">
@@ -100,5 +74,41 @@
 
     <!-- JavaScript -->
     <script src="js/events.js"></script>
+
+    <!-- Script to fetch and display Events and announcements -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const eventsContainer = document.getElementById('events-container');
+            const announcementsContainer = document.getElementById('announcements-container');
+    
+            fetch('http://localhost:3000/events')
+                .then(response => response.json())
+                .then(events => {
+                    eventsContainer.innerHTML = events.map(event => `
+                        <div class="event-card">
+                            <h3>${event.title}</h3>
+                            <p><strong>Date:</strong> ${event.date}</p>
+                            <p><strong>Time:</strong> ${event.time}</p>
+                            <p><strong>Details:</strong> ${event.description}</p>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.error('Error fetching events:', error));
+    
+            fetch('http://localhost:3000/announcements')
+                .then(response => response.json())
+                .then(announcements => {
+                    announcementsContainer.innerHTML = announcements.map(announcement => `
+                        <div class="announcement-card">
+                            <h3>${announcement.title}</h3>
+                            <p><strong>Date:</strong> ${announcement.date}</p>
+                            <p><strong>Details:</strong> ${announcement.details}</p>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.error('Error fetching announcements:', error));
+        });
+    </script>
+    
 </body>
 </html>

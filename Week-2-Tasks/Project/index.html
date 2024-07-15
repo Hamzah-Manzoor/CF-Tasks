@@ -27,6 +27,7 @@
                 <span>Welcome to Dashboard</span>
             </div>
             <div class="profile-icon-container">
+                <div class="employee-name" id="employee-name"></div>
                 <i class="fas fa-user-circle profile-icon" id="profile-icon"></i>
                 <nav class="profile-menu" id="profile-menu">
                     <ul>
@@ -63,24 +64,47 @@
     <!-- Cards Section -->
     <main class="cards-section">
         <!-- Upcoming Events and Announcements Card -->
-        <article class="card">
+        <!-- <article class="card">
             <h2>Events and Announcements</h2>
 
             <div class="events-section">
                 <h3>Events</h3>
                 <ul>
-                    <li><strong>Project Kickoff Meeting:</strong> July 20, 2024 at 10:00 AM</li>
-                    <li><strong>Team Building Activity:</strong> July 25, 2024 at 2:00 PM</li>
-                    <!-- Add more events as needed -->
+                    <li><strong>Project Kickoff Meeting:</strong> <br>July 20, 2024 at 10:00 AM</li>
+                    <li><strong>Team Building Activity:</strong> <br>July 25, 2024 at 2:00 PM</li>
                 </ul>
             </div>
 
             <div class="announcements-section">
                 <h3>Announcements</h3>
                 <ul>
-                    <li><strong>New HR Policies:</strong> Effective July 15, 2024</li>
-                    <li><strong>Office Closure:</strong> July 30, 2024 for Maintenance</li>
-                    <!-- Add more announcements as needed -->
+                    <li><strong>New HR Policies:</strong> <br>Effective July 15, 2024</li>
+                    <li><strong>Office Closure:</strong> <br>July 30, 2024 for Maintenance</li>
+                </ul>
+            </div>
+
+            <div class="view-all-events">
+                <button onclick="window.location.href='events.html'">View All Events</button>
+            </div>
+        </article> -->
+
+        <!-- Cards Section -->
+
+        <!-- Upcoming Events and Announcements Card -->
+        <article class="card">
+            <h2>Events and Announcements</h2>
+
+            <div class="events-section">
+                <h3>Events</h3>
+                <ul id="events-list">
+                    <!-- Dynamic events will be inserted here -->
+                </ul>
+            </div>
+
+            <div class="announcements-section">
+                <h3>Announcements</h3>
+                <ul id="announcements-list">
+                    <!-- Dynamic announcements will be inserted here -->
                 </ul>
             </div>
 
@@ -90,8 +114,9 @@
         </article>
 
 
+
         <!-- Annual Leave Details Card -->
-        <article class="card annual-leaves-card">
+        <!-- <article class="card annual-leaves-card">
             <h2>Annual Leave Details</h2>
             <div class="leave-details">
                 <div class="leave-item">
@@ -110,35 +135,63 @@
             <div class="apply-leave-container">
                 <button onclick="window.location.href='leaves.html'">Apply For Leave</button>
             </div>
+        </article> -->
+
+        <!-- Annual Leave Details Card -->
+        <article class="card annual-leaves-card">
+            <h2>Annual Leave Details</h2>
+            <div class="leave-details">
+                <div class="leave-item">
+                    <span class="leave-title">Total Annual Leaves:</span>
+                    <span class="leave-value"></span>
+                </div>
+                <div class="leave-item">
+                    <span class="leave-title">Leaves Taken:</span>
+                    <span class="leave-value"></span>
+                </div>
+                <div class="leave-item">
+                    <span class="leave-title">Remaining Leaves:</span>
+                    <span class="leave-value"></span>
+                </div>
+            </div>
+            <div class="apply-leave-container">
+                <button onclick="window.location.href='leaves.html'">Apply For Leave</button>
+            </div>
         </article>
 
 
         <!-- Upcoming Birthdays Card -->
-        <article class="card">
+        <!-- <article class="card">
             <h2>Upcoming Birthdays</h2>
             <ul class="birthday-list">
-                <li>
+                <li> -->
                     <!-- <img src="assets/profile_placeholder.png" alt="Profile Icon" class="profile-icon"> -->
-                    <i class="fas fa-user-circle profile-icon2" id="profile-icon"></i>
+                    <!-- <i class="fas fa-user-circle profile-icon2" id="profile-icon"></i>
                     <div class="birthday-info">
                         <span class="birthday-name">John Doe</span>
                         <span class="birthday-position">Software Engineer</span>
                         <span class="birthday-date">July 15</span>
                     </div>
                 </li>
-                <li>
+                <li> -->
                     <!-- <img src="assets/profile_placeholder.png" alt="Profile Icon" class="profile-icon"> -->
-                    <i class="fas fa-user-circle profile-icon2" id="profile-icon"></i>
+                    <!-- <i class="fas fa-user-circle profile-icon2" id="profile-icon"></i>
                     <div class="birthday-info">
                         <span class="birthday-name">Jane Smith</span>
                         <span class="birthday-position">Project Manager</span>
                         <span class="birthday-date">July 20</span>
                     </div>
                 </li>
-                <!-- Add more as needed -->
+            </ul>
+        </article> -->
+
+        <!-- Upcoming Birthdays Card -->
+        <article class="card">
+            <h2>Upcoming Birthdays</h2>
+            <ul class="birthday-list">
+                <!-- Dynamic content will be inserted here -->
             </ul>
         </article>
-
 
         <!-- Lunch Menu Card -->
         <article class="card">
@@ -169,8 +222,9 @@
             </div>
         </article>
 
-
     </main>
+
+    <div id="employee-list"></div>
 
     <footer>
         <div class="footer-container">
@@ -187,5 +241,153 @@
 
     <!-- JavaScript -->
     <script src="js/index.js"></script>
+
+    <script>
+        fetch('http://localhost:3000/employees')
+            .then(response => response.json())
+            .then(data => {
+                const employeeList = document.getElementById('employee-list');
+                data.forEach(employee => {
+                    const employeeItem = document.createElement('div');
+                    employeeItem.innerHTML = `
+                        <h2>${employee.name}</h2>
+                        <p>Email: ${employee.email}</p>
+                        <p>Position: ${employee.position}</p>
+                        <p>Date of Joining: ${employee.dateOfJoining}</p>
+                        <p>Employee ID: ${employee.employeeId}</p>
+                        <p>Birthdate: ${employee.birthdate}</p>
+                    `;
+                    employeeList.appendChild(employeeItem);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+
+    <!-- Fetching the name of the employee to display it on Header -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost:3000/employees?employeeId=E001')
+                .then(response => response.json())
+                .then(employees => {
+                    if (employees.length > 0) {
+                        const firstEmployee = employees[0];
+                        const employeeNameContainer = document.getElementById('employee-name');
+                        employeeNameContainer.textContent = firstEmployee.name;
+                    } else {
+                        console.error('No employees found');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+    <!-- Employees that have birthdays in the next 60 days -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const birthdayListContainer = document.querySelector('.birthday-list');
+            const today = new Date();
+            const upcomingBirthdays = [];
+
+            fetch('http://localhost:3000/employees')
+                .then(response => response.json())
+                .then(employees => {
+                    employees.forEach(employee => {
+                        const birthdate = new Date(employee.birthdate);
+                        const thisYear = today.getFullYear();
+                        birthdate.setFullYear(thisYear);
+                        
+                        if (birthdate < today) {
+                            birthdate.setFullYear(thisYear + 1);
+                        }
+
+                        const diffDays = (birthdate - today) / (1000 * 60 * 60 * 24);
+                        if (diffDays <= 60) {
+                            upcomingBirthdays.push({
+                                name: employee.name,
+                                position: employee.position,
+                                birthdate: birthdate.toDateString().slice(4, 10) // Format as 'Month Day'
+                            });
+                        }
+                    });
+
+                    if (upcomingBirthdays.length > 0) {
+                        birthdayListContainer.innerHTML = upcomingBirthdays.map(birthday => `
+                            <li>
+                                <i class="fas fa-user-circle profile-icon2"></i>
+                                <div class="birthday-info">
+                                    <span class="birthday-name">${birthday.name}</span>
+                                    <span class="birthday-position">${birthday.position}</span>
+                                    <span class="birthday-date">${birthday.birthdate}</span>
+                                </div>
+                            </li>
+                        `).join('');
+                    } else {
+                        birthdayListContainer.innerHTML = '<li>No upcoming birthdays in the next 60 days.</li>';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+    <!-- Content for Events and Announcements Card -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const eventsList = document.getElementById('events-list');
+            const announcementsList = document.getElementById('announcements-list');
+
+            // Function to compare dates
+            function compareDates(a, b) {
+                return new Date(a.date) - new Date(b.date);
+            }
+
+            // Fetch events and display the nearest two future events
+            fetch('http://localhost:3000/events')
+                .then(response => response.json())
+                .then(events => {
+                    const now = new Date();
+                    const futureEvents = events.filter(event => new Date(event.date) >= now)
+                                            .sort(compareDates)
+                                            .slice(0, 2);
+                    eventsList.innerHTML = futureEvents.map(event => `
+                        <li><strong>${event.title}:</strong> <br>${event.date} at ${event.time}</li>
+                    `).join('');
+                })
+                .catch(error => console.error('Error fetching events:', error));
+
+            // Fetch announcements and display the two most recent past announcements
+            fetch('http://localhost:3000/announcements')
+                .then(response => response.json())
+                .then(announcements => {
+                    const now = new Date();
+                    const pastAnnouncements = announcements.filter(announcement => new Date(announcement.date) < now)
+                                                        .sort((a, b) => compareDates(b, a))
+                                                        .slice(0, 2);
+                    announcementsList.innerHTML = pastAnnouncements.map(announcement => `
+                        <li><strong>${announcement.title}:</strong> <br>Effective ${announcement.date}</li>
+                    `).join('');
+                })
+                .catch(error => console.error('Error fetching announcements:', error));
+        });
+    </script>
+
+    <!-- To get leaves data -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch employee leave details
+            fetch('http://localhost:3000/employees?employeeId=E001')
+                .then(response => response.json())
+                .then(employee => {
+                    //document.querySelector('.leave-details .leave-item:nth-child(1) .leave-value').textContent = 20;
+                    //console.log(employee[0].name)
+                    document.querySelector('.leave-details .leave-item:nth-child(1) .leave-value').textContent = employee[0].totalAnnualLeaves;
+                    document.querySelector('.leave-details .leave-item:nth-child(2) .leave-value').textContent = employee[0].leavesTaken;
+                    document.querySelector('.leave-details .leave-item:nth-child(3) .leave-value').textContent = employee[0].totalAnnualLeaves - employee[0].leavesTaken;
+                })
+                .catch(error => console.error('Error fetching employee leave details:', error));
+        });
+    </script>
+
+
+
 </body>
 </html>
