@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Leaves</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'employee_management/css/projects.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <a href="/employee_management">
+                    <img src="{% static 'employee_management/assets/codefulcrum_logo.jpeg' %}" alt="Company Logo" class="company-logo">
+                    <span class="company-name">Code Fulcrum</span>
+                </a>
+            </div>
+            <nav class="main-menu">
+                <ul>
+                    <li><a href="/employee_management">Home</a></li>
+                    <li><a href="/employee_management/events">Events</a></li>
+                    <li><a href="/employee_management/leaves">Leaves</a></li>
+                    <li><a href="/employee_management/profile">Profile</a></li>
+                </ul>
+            </nav>
+            <div class="profile-icon-container">
+                <i class="fas fa-user-circle profile-icon" id="profile-icon"></i>
+                <nav class="profile-menu" id="profile-menu">
+                    <ul>
+                        <li><a href="/employee_management/profile">Update Profile</a></li>
+                        <li><a href="/employee_management/logout">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Divider -->
+    <hr class="divider">
+
+    <main class="main-section">
+
+        <div class="container">
+            <h1>Manage Projects</h1>
+
+            <!-- Add Project Button -->
+            {% if can_create %}
+                <button type="button" class="btn btn-primary" onclick="openModal('addProjectModal')">
+                    Add New Project
+                </button>
+            {% endif %}
+
+            <!-- Projects Table -->
+            <div class="projects-container">
+                {% for project in projects %}
+                <div class="project-card">
+                    <h3>{{ project.name }}</h3>
+                    <p><strong>Stack:</strong> {{ project.stack }}</p>
+                    <p><strong>Team Members:</strong></p>
+                    <ul>
+                        {% for member in project.team_members.all %}
+                        <li>{{ member.name }} (ID: {{ member.id }}, Position: {{member.position}})</li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="project-actions">
+                        {% if can_update %}
+                            <button type="button" class="btn btn-warning" onclick="openModal('editProjectModal{{ project.id }}')">
+                                Edit
+                            </button>
+                        {% endif %}
+
+                        {% if can_delete %}
+                        <form action="{% url 'delete_project' project.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Add Project Modal -->
+            <div id="addProjectModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('addProjectModal')">&times;</span>
+                    <form action="{% url 'add_project' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add New Project</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="projectName" class="form-label">Project Name</label>
+                                <input type="text" class="form-control" id="projectName" name="project_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="projectStack" class="form-label">Stack</label>
+                                <input type="text" class="form-control" id="projectStack" name="stack" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="teamMembers" class="form-label">Team Members</label>
+                                <select multiple class="form-select" id="teamMembers" name="team_members">
+                                    {% for employee in employees %}
+                                        <option value="{{ employee.id }}">{{ employee.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal('addProjectModal')">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Project</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- Edit Project Modals -->
+            {% for project in projects %}
+            <div id="editProjectModal{{ project.id }}" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('editProjectModal{{ project.id }}')">&times;</span>
+                    <form action="{% url 'edit_project' project.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Project</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="projectName{{ project.id }}" class="form-label">Project Name</label>
+                                <input type="text" class="form-control" id="projectName{{ project.id }}" name="project_name" value="{{ project.name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="projectStack{{ project.id }}" class="form-label">Stack</label>
+                                <input type="text" class="form-control" id="projectStack{{ project.id }}" name="stack" value="{{ project.stack }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="teamMembers{{ project.id }}" class="form-label">Team Members</label>
+                                <select multiple class="form-select" id="teamMembers{{ project.id }}" name="team_members">
+                                    {% for employee in employees %}
+                                    <option value="{{ employee.id }}" {% if employee in project.team_members.all %}selected{% endif %}>
+                                        {{ employee.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal('editProjectModal{{ project.id }}')">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <p>&copy; 2024 Code Fulcrum. All rights reserved.</p>
+            </div>
+            <div class="footer-right">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target.id);
+            }
+        }
+    </script>
+
+    <script>
+        document.querySelector('form').onsubmit = function() {
+            let selectedTeamMembers = document.getElementById('teamMembers').selectedOptions;
+            if (selectedTeamMembers.length === 0) {
+                alert("Please select at least one team member.");
+                return false;
+            }
+            return true;
+        };
+    </script>
+
+</body>
+</html>

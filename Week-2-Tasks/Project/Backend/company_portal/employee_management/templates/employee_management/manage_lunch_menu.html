@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Leaves</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'employee_management/css/manage_lunch_menu.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <a href="/employee_management">
+                    <img src="{% static 'employee_management/assets/codefulcrum_logo.jpeg' %}" alt="Company Logo" class="company-logo">
+                    <span class="company-name">Code Fulcrum</span>
+                </a>
+            </div>
+            <nav class="main-menu">
+                <ul>
+                    <li><a href="/employee_management">Home</a></li>
+                    <li><a href="/employee_management/events">Events</a></li>
+                    <li><a href="/employee_management/leaves">Leaves</a></li>
+                    <li><a href="/employee_management/profile">Profile</a></li>
+                </ul>
+            </nav>
+            <div class="profile-icon-container">
+                <i class="fas fa-user-circle profile-icon" id="profile-icon"></i>
+                <nav class="profile-menu" id="profile-menu">
+                    <ul>
+                        <li><a href="/employee_management/profile">Update Profile</a></li>
+                        <li><a href="/employee_management/logout">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Divider -->
+    <hr class="divider">
+
+    <main class="main-section">
+        <h1>Manage Lunch Menu</h1>
+
+        <!-- Admin Section -->
+        <div>
+            <h2>Admin Settings</h2>
+            <p>Friday Lunch Iterator: {{ admin.friday_lunch_iterator }}</p>
+            <p>Weekday Lunch Iterator: {{ admin.weekday_lunch_iterator }}</p>
+            <p>Lunch Time: {{ admin.lunch_time }}</p>
+            {% if 'update' in lunch_menu_permissions %}
+            <button onclick="openAdminEditModal()">Edit</button>
+            {% endif %}
+        </div>
+
+        <!-- Admin Edit Modal -->
+        <div id="adminEditModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAdminEditModal()">&times;</span>
+                <h2>Edit Admin Settings</h2>
+                <form method="POST" action="{% url 'admin_update' %}">
+                    {% csrf_token %}
+                    <div>
+                        <label for="editFridayIterator">Friday Lunch Iterator:</label>
+                        <input type="number" id="editFridayIterator" name="friday_lunch_iterator" value="{{ admin.friday_lunch_iterator }}" required>
+                    </div>
+                    <div>
+                        <label for="editWeekdayIterator">Weekday Lunch Iterator:</label>
+                        <input type="number" id="editWeekdayIterator" name="weekday_lunch_iterator" value="{{ admin.weekday_lunch_iterator }}" required>
+                    </div>
+                    <div>
+                        <label for="editLunchTime">Lunch Time:</label>
+                        <input type="time" id="editLunchTime" name="lunch_time" value="{{ admin.lunch_time }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAdminEditModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lunch Menu Section -->
+        <div>
+            <h2>Lunch Menu</h2>
+            {% if 'create' in lunch_menu_permissions %}
+            <button onclick="openLunchMenuCreateModal()">Add New Dish</button>
+            {% endif %}
+            <h3>Friday's Lunch</h3>
+            <ul>
+                {% for dish in friday_lunch %}
+                <li>{{ dish.dish_name }}
+                    {% if 'update' in lunch_menu_permissions %}
+                    <button onclick="openLunchMenuEditModal('{{ dish.id }}', '{{ dish.dish_name }}')">Edit</button>
+                    {% endif %}
+                    {% if 'delete' in lunch_menu_permissions %}
+                    <form method="POST" action="{% url 'lunch_menu_delete' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="dish_id" value="{{ dish.id }}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+
+            <h3>Weekday's Lunch</h3>
+            <ul>
+                {% for dish in weekday_lunch %}
+                <li>{{ dish.dish_name }}
+                    {% if 'update' in lunch_menu_permissions %}
+                    <button onclick="openLunchMenuEditModal('{{ dish.id }}', '{{ dish.dish_name }}')">Edit</button>
+                    {% endif %}
+                    {% if 'delete' in lunch_menu_permissions %}
+                    <form method="POST" action="{% url 'lunch_menu_delete' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="dish_id" value="{{ dish.id }}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Lunch Menu Create Modal -->
+        <div id="lunchMenuCreateModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeLunchMenuCreateModal()">&times;</span>
+                <h2>Add New Dish</h2>
+                <form method="POST" action="{% url 'lunch_menu_create' %}">
+                    {% csrf_token %}
+                    <div>
+                        <label for="dishName">Dish Name:</label>
+                        <input type="text" id="dishName" name="dish_name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Dish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeLunchMenuCreateModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lunch Menu Edit Modal -->
+        <div id="lunchMenuEditModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeLunchMenuEditModal()">&times;</span>
+                <h2>Edit Dish</h2>
+                <form method="POST" action="{% url 'lunch_menu_update' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="dish_id" id="editDishId">
+                    <div>
+                        <label for="editDishName">Dish Name:</label>
+                        <input type="text" id="editDishName" name="dish_name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Dish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeLunchMenuEditModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <p>&copy; 2024 Code Fulcrum. All rights reserved.</p>
+            </div>
+            <div class="footer-right">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function openAdminEditModal() {
+            document.getElementById('adminEditModal').style.display = 'block';
+        }
+
+        function closeAdminEditModal() {
+            document.getElementById('adminEditModal').style.display = 'none';
+        }
+
+        function openLunchMenuCreateModal() {
+            document.getElementById('lunchMenuCreateModal').style.display = 'block';
+        }
+
+        function closeLunchMenuCreateModal() {
+            document.getElementById('lunchMenuCreateModal').style.display = 'none';
+        }
+
+        function openLunchMenuEditModal(id, name) {
+            document.getElementById('editDishId').value = id;
+            document.getElementById('editDishName').value = name;
+            document.getElementById('lunchMenuEditModal').style.display = 'block';
+        }
+
+        function closeLunchMenuEditModal() {
+            document.getElementById('lunchMenuEditModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

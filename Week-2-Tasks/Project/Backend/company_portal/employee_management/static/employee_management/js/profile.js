@@ -7,25 +7,52 @@ document.getElementById('profile-icon').addEventListener('click', function() {
     }
 });
 
-document.getElementById('profile-form').addEventListener('submit', function(event) {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+    const profileForm = document.getElementById('profile-form');
 
-    // Simple form validation
-    const birthdate = document.getElementById('birthdate').value;
-    const joiningDate = document.getElementById('joining-date').value;
-    const position = document.getElementById('position').value.trim();
+    profileForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent the form from submitting the default way
 
-    if (!birthdate || !joiningDate || !position) {
-        alert('Please fill in all the fields.');
-        return;
-    }
+        const formData = new FormData(profileForm);
+        const url = profileForm.getAttribute('action'); // Get the form's action URL
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    // Update profile (for now, just log the data)
-    console.log({
-        birthdate,
-        joiningDate,
-        position
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                displayMessage('Profile updated successfully!', 'success');
+            } else {
+                displayMessage('Error updating profile. Please try again.', 'error');
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            displayMessage('Error updating profile. Please try again.', 'error');
+        }
     });
 
-    alert('Profile updated successfully.');
+    function displayMessage(message, type) {
+        const messagesContainer = document.querySelector('.messages');
+        const messageItem = document.createElement('li');
+        messageItem.textContent = message;
+        messageItem.classList.add(type);
+        messagesContainer.appendChild(messageItem);
+
+        // Remove the message after a few seconds
+        setTimeout(() => {
+            messageItem.remove();
+        }, 5000);
+    }
 });

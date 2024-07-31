@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Company Employee Portal</title>
-<!--    <link rel="stylesheet" href="css/index.css">-->
     {% load static %}
     {% load custom_filters %}
     <meta name="csrf-token" content="{{ csrf_token }}">
@@ -20,26 +18,31 @@
                 <img src="{% static 'employee_management/assets/codefulcrum_logo.jpeg' %}" alt="Company Logo" class="company-logo">
                 <span class="company-name">Code Fulcrum</span>
             </div>
-            <!-- <nav class="main-menu">
+            <nav class="main-menu">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="events.html">Events</a></li>
-                    <li><a href="leaves.html">Leaves</a></li>
-                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="/employee_management/">Home</a></li>
+                    <li><a href="/employee_management/events">Events</a></li>
+                    <li><a href="/employee_management/leaves">Leaves</a></li>
+                    <li><a href="/employee_management/profile">Profile</a></li>
+                    <li><a href="/employee_management/users">Users</a></li>
+                    <li><a href="/employee_management/manage_leaves">Mng Leaves</a></li>
+                    <li><a href="/employee_management/manage_lunch_menu">Mng Lunch</a></li>
+                    <li><a href="/employee_management/projects">Projects</a></li>
+                    <li><a href="/employee_management/feedback">Feedback</a></li>
                 </ul>
-            </nav> -->
-            <div class="navbar-heading">
-                <span>Welcome to Dashboard</span>
-            </div>
+            </nav>
+<!--            <div class="navbar-heading">-->
+<!--                <span>Welcome to Dashboard</span>-->
+<!--            </div>-->
             <div class="profile-icon-container">
                 <div class="employee-name" id="employee-name">
-                    {{ employees.0.name }}
+                    {{ employee.name }}
                 </div>
                 <i class="fas fa-user-circle profile-icon" id="profile-icon"></i>
                 <nav class="profile-menu" id="profile-menu">
                     <ul>
                         <li><a href="/employee_management/profile">Update Profile</a></li>
-                        <li><a href="/employee_management/login">Logout</a></li>
+                        <li><a href="/employee_management/logout">Logout</a></li>
                     </ul>
                 </nav>
             </div>
@@ -70,32 +73,6 @@
 
     <!-- Cards Section -->
     <main class="cards-section">
-        <!-- Upcoming Events and Announcements Card -->
-        <!-- <article class="card">
-            <h2>Events and Announcements</h2>
-
-            <div class="events-section">
-                <h3>Events</h3>
-                <ul>
-                    <li><strong>Project Kickoff Meeting:</strong> <br>July 20, 2024 at 10:00 AM</li>
-                    <li><strong>Team Building Activity:</strong> <br>July 25, 2024 at 2:00 PM</li>
-                </ul>
-            </div>
-
-            <div class="announcements-section">
-                <h3>Announcements</h3>
-                <ul>
-                    <li><strong>New HR Policies:</strong> <br>Effective July 15, 2024</li>
-                    <li><strong>Office Closure:</strong> <br>July 30, 2024 for Maintenance</li>
-                </ul>
-            </div>
-
-            <div class="view-all-events">
-                <button onclick="window.location.href='events.html'">View All Events</button>
-            </div>
-        </article> -->
-
-        <!-- Cards Section -->
 
         <!-- Upcoming Events and Announcements Card -->
         <article class="card">
@@ -124,51 +101,27 @@
             </div>
         </article>
 
-
-
-        <!-- Annual Leave Details Card -->
-        <!-- <article class="card annual-leaves-card">
-            <h2>Annual Leave Details</h2>
-            <div class="leave-details">
-                <div class="leave-item">
-                    <span class="leave-title">Total Annual Leaves:</span>
-                    <span class="leave-value">30</span>
-                </div>
-                <div class="leave-item">
-                    <span class="leave-title">Leaves Taken:</span>
-                    <span class="leave-value">10</span>
-                </div>
-                <div class="leave-item">
-                    <span class="leave-title">Remaining Leaves:</span>
-                    <span class="leave-value">20</span>
-                </div>
-            </div>
-            <div class="apply-leave-container">
-                <button onclick="window.location.href='leaves.html'">Apply For Leave</button>
-            </div>
-        </article> -->
-
         <!-- Annual Leave Details Card -->
         <article class="card annual-leaves-card">
             <h2>Annual Leave Details</h2>
             <div class="leave-details">
                 <div class="employee-leave-details">
-                    <h3>{{ employees.0.name }} ({{ employees.0.position }})</h3>
+                    <h3>{{ employee.name }} ({{ employee.position }})</h3>
                     <div class="leave-item">
                         <span class="leave-title">Annual Leaves:</span>
-                        <span class="leave-value">{{ employees.0.annual_leaves_taken }} / {{ allocated_leaves.annual_leaves }}</span>
+                        <span class="leave-value">{{ employee.annual_leaves_taken }} / {{ allocated_leaves.annual_leaves }}</span>
                     </div>
                     <div class="leave-item">
                         <span class="leave-title">Casual Leaves:</span>
-                        <span class="leave-value">{{ employees.0.casual_leaves_taken }} / {{ allocated_leaves.casual_leaves }}</span>
+                        <span class="leave-value">{{ employee.casual_leaves_taken }} / {{ allocated_leaves.casual_leaves }}</span>
                     </div>
                     <div class="leave-item">
                         <span class="leave-title">Medical Leaves:</span>
-                        <span class="leave-value">{{ employees.0.medical_leaves_taken }} / {{ allocated_leaves.medical_leaves }}</span>
+                        <span class="leave-value">{{ employee.medical_leaves_taken }} / {{ allocated_leaves.medical_leaves }}</span>
                     </div>
                     <div class="leave-item">
                         <span class="leave-title">Unpaid Leaves:</span>
-                        <span class="leave-value">{{ employees.0.unpaid_leaves_taken }}</span>
+                        <span class="leave-value">{{ employee.unpaid_leaves_taken }}</span>
                     </div>
                 </div>
             </div>
@@ -176,34 +129,6 @@
                 <button onclick="window.location.href='leaves'">Apply For Leave</button>
             </div>
         </article>
-
-
-
-
-        <!-- Upcoming Birthdays Card -->
-        <!-- <article class="card">
-            <h2>Upcoming Birthdays</h2>
-            <ul class="birthday-list">
-                <li> -->
-                    <!-- <img src="assets/profile_placeholder.png" alt="Profile Icon" class="profile-icon"> -->
-                    <!-- <i class="fas fa-user-circle profile-icon2" id="profile-icon"></i>
-                    <div class="birthday-info">
-                        <span class="birthday-name">John Doe</span>
-                        <span class="birthday-position">Software Engineer</span>
-                        <span class="birthday-date">July 15</span>
-                    </div>
-                </li>
-                <li> -->
-                    <!-- <img src="assets/profile_placeholder.png" alt="Profile Icon" class="profile-icon"> -->
-                    <!-- <i class="fas fa-user-circle profile-icon2" id="profile-icon"></i>
-                    <div class="birthday-info">
-                        <span class="birthday-name">Jane Smith</span>
-                        <span class="birthday-position">Project Manager</span>
-                        <span class="birthday-date">July 20</span>
-                    </div>
-                </li>
-            </ul>
-        </article> -->
 
         <!-- Upcoming Birthdays Card -->
         <article class="card">
@@ -233,27 +158,40 @@
                     <i class="fas fa-utensils"></i>
                     <div>
                         <p><strong>Today's Menu:</strong></p>
-                        <p>{{ todays_menu.dish_name }}</p>
+                        {% if todays_menu == "Weekend" %}
+                            <p>Off-Day</p>
+                        {% else %}
+                            <p>{{ todays_menu.dish_name }}</p>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="menu-time">
                     <i class="fas fa-clock"></i>
                     <div>
                         <p><strong>Lunch Time:</strong></p>
-<!--                        <p>12:30 PM - 1:30 PM</p>-->
                         <p>{{ admin.lunch_time|format_lunch_time }}</p>
-<!--                        <p>{{ admin.lunch_time }} PM - 1:30 PM</p>-->
                     </div>
                 </div>
             </div>
+            {% if todays_menu != "Weekend" %}
             <div class="reaction-buttons">
-                <button id="like-button" class="like-button" onclick="toggleLike()">
-                    <i class="fas fa-thumbs-up"></i> Like <span id="like-count">{{ likes_count }}</span>
-                </button>
-                <button id="dislike-button" class="dislike-button" onclick="toggleDislike()">
-                    <i class="fas fa-thumbs-down"></i> Dislike <span id="dislike-count">{{ dislikes_count }}</span>
-                </button>
+                <form method="post" action="{% url 'like_lunch' %}" id="like-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="like" value="1">
+                    <button type="submit" id="like-button" class="like-button" style="background-color: {% if liked %}gray{% else %}#0073e6{% endif %};">
+                        <i class="fas fa-thumbs-up"></i> Like <span id="like-count">{{ likes_count }}</span>
+                    </button>
+                </form>
+
+                <form method="post" action="{% url 'like_lunch' %}" id="dislike-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="dislike" value="1">
+                    <button type="submit" id="dislike-button" class="dislike-button" style="background-color: {% if disliked %}gray{% else %}#0073e6{% endif %};">
+                        <i class="fas fa-thumbs-down"></i> Dislike <span id="dislike-count">{{ dislikes_count }}</span>
+                    </button>
+                </form>
             </div>
+            {% endif %}
         </article>
 
     </main>
@@ -269,256 +207,10 @@
             </div>
         </div>
     </footer>
-    
+
 
     <!-- JavaScript -->
-<!--    <script src="js/index.js"></script>-->
     <script src="{% static 'employee_management/js/index.js' %}"></script>
-
-    <!-- Fetching the name of the employee to display it on Header -->
-<!--    <script>-->
-<!--        document.addEventListener('DOMContentLoaded', function() {-->
-<!--            fetch('http://localhost:3000/employees?employeeId=E001')-->
-<!--                .then(response => response.json())-->
-<!--                .then(employees => {-->
-<!--                    if (employees.length > 0) {-->
-<!--                        const firstEmployee = employees[0];-->
-<!--                        const employeeNameContainer = document.getElementById('employee-name');-->
-<!--                        employeeNameContainer.textContent = firstEmployee.name;-->
-<!--                    } else {-->
-<!--                        console.error('No employees found');-->
-<!--                    }-->
-<!--                })-->
-<!--                .catch(error => console.error('Error:', error));-->
-<!--        });-->
-<!--    </script>-->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('http://localhost:8000/employee_management/employees/1/')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(employee => {
-                    const employeeNameContainer = document.getElementById('employee-name');
-                    employeeNameContainer.textContent = employee.name;
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    </script>
-
-
-    <!-- Employees that have birthdays in the next 60 days -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const birthdayListContainer = document.querySelector('.birthday-list');
-            const today = new Date();
-            const upcomingBirthdays = [];
-
-            fetch('http://localhost:8000/employee_management/employees')
-                .then(response => response.json())
-                .then(employees => {
-                    employees.forEach(employee => {
-                        const birthdate = new Date(employee.birthdate);
-                        const thisYear = today.getFullYear();
-                        birthdate.setFullYear(thisYear);
-                        
-                        if (birthdate < today) {
-                            birthdate.setFullYear(thisYear + 1);
-                        }
-
-                        const diffDays = (birthdate - today) / (1000 * 60 * 60 * 24);
-                        if (diffDays <= 60) {
-                            upcomingBirthdays.push({
-                                name: employee.name,
-                                position: employee.position,
-                                birthdate: birthdate.toDateString().slice(4, 10) // Format as 'Month Day'
-                            });
-                        }
-                    });
-
-                    if (upcomingBirthdays.length > 0) {
-                        birthdayListContainer.innerHTML = upcomingBirthdays.map(birthday => `
-                            <li>
-                                <i class="fas fa-user-circle profile-icon2"></i>
-                                <div class="birthday-info">
-                                    <span class="birthday-name">${birthday.name}</span>
-                                    <span class="birthday-position">${birthday.position}</span>
-                                    <span class="birthday-date">${birthday.birthdate}</span>
-                                </div>
-                            </li>
-                        `).join('');
-                    } else {
-                        birthdayListContainer.innerHTML = '<li>No upcoming birthdays in the next 60 days.</li>';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    </script>
-
-    <!-- Content for Events and Announcements Card -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const eventsList = document.getElementById('events-list');
-            const announcementsList = document.getElementById('announcements-list');
-
-            // Function to compare dates
-            function compareDates(a, b) {
-                return new Date(a.date) - new Date(b.date);
-            }
-
-            // Fetch events and display the nearest two future events
-            fetch('http://localhost:8000/employee_management/events')
-                .then(response => response.json())
-                .then(events => {
-                    const now = new Date();
-                    const futureEvents = events.filter(event => new Date(event.date) >= now)
-                                            .sort(compareDates)
-                                            .slice(0, 2);
-                    eventsList.innerHTML = futureEvents.map(event => `
-                        <li><strong>${event.title}:</strong> <br>${event.date} at ${event.time}</li>
-                    `).join('');
-                })
-                .catch(error => console.error('Error fetching events:', error));
-
-            // Fetch announcements and display the two most recent past announcements
-            fetch('http://localhost:8000/employee_management/announcements')
-                .then(response => response.json())
-                .then(announcements => {
-                    const now = new Date();
-                    const pastAnnouncements = announcements.filter(announcement => new Date(announcement.date) < now)
-                                                        .sort((a, b) => compareDates(b, a))
-                                                        .slice(0, 2);
-                    announcementsList.innerHTML = pastAnnouncements.map(announcement => `
-                        <li><strong>${announcement.title}:</strong> <br>Effective ${announcement.date}</li>
-                    `).join('');
-                })
-                .catch(error => console.error('Error fetching announcements:', error));
-        });
-    </script>
-
-    <!-- To get leaves data -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Fetch employee leave details
-            fetch('http://localhost:8000/employee_management/employees/1/')
-                .then(response => response.json())
-                .then(employee => {
-                    //document.querySelector('.leave-details .leave-item:nth-child(1) .leave-value').textContent = 20;
-                    //console.log(employee.name)
-                    document.querySelector('.leave-details .leave-item:nth-child(1) .leave-value').textContent = employee.total_annual_leaves;
-                    document.querySelector('.leave-details .leave-item:nth-child(2) .leave-value').textContent = employee.leaves_taken;
-                    document.querySelector('.leave-details .leave-item:nth-child(3) .leave-value').textContent = employee.total_annual_leaves - employee.leaves_taken;
-                })
-                .catch(error => console.error('Error fetching employee leave details:', error));
-        });
-    </script>
-
-    <!--For Likes and Dislikes on Lunch Menu-->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            checkInitialLikeDislike();
-        });
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        const csrftoken = getCookie('csrftoken');
-
-        function toggleLike() {
-            fetch('http://localhost:8000/employee_management/like/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrftoken,
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'same-origin'
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('like-count').textContent = data.likes_count;
-                document.getElementById('dislike-count').textContent = data.dislikes_count;
-                checkInitialLikeDislike();
-            });
-        }
-
-        function toggleDislike() {
-            fetch('http://localhost:8000/employee_management/dislike/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrftoken,
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'same-origin'
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('like-count').textContent = data.likes_count;
-                document.getElementById('dislike-count').textContent = data.dislikes_count;
-                checkInitialLikeDislike();
-            });
-        }
-
-        function checkInitialLikeDislike() {
-            fetch('http://localhost:8000/employee_management/like-dislike-status/', {
-                method: 'GET',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'same-origin'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.liked) {
-                    document.getElementById('like-button').classList.add('active');
-                    document.getElementById('dislike-button').classList.remove('active');
-
-                    const likeButton = document.getElementById('like-button');
-                    const dislikeButton = document.getElementById('dislike-button');
-
-                    likeButton.style.backgroundColor = 'gray';
-                    dislikeButton.style.backgroundColor = '#007bff';
-
-                } else if (data.disliked) {
-                    document.getElementById('like-button').classList.remove('active');
-                    document.getElementById('dislike-button').classList.add('active');
-
-                    const likeButton = document.getElementById('like-button');
-                    const dislikeButton = document.getElementById('dislike-button');
-
-                    likeButton.style.backgroundColor = '#007bff';
-                    dislikeButton.style.backgroundColor = 'gray';
-
-                } else {
-                    document.getElementById('like-button').classList.remove('active');
-                    document.getElementById('dislike-button').classList.remove('active');
-
-                    const likeButton = document.getElementById('like-button');
-                    const dislikeButton = document.getElementById('dislike-button');
-
-                    likeButton.style.backgroundColor = '#007bff';
-                    dislikeButton.style.backgroundColor = '#007bff';
-                }
-            });
-        }
-    </script>
-
-
 
 </body>
 </html>

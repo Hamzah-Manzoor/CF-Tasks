@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Leaves</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'employee_management/css/manage_leaves.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <a href="/employee_management">
+                    <img src="{% static 'employee_management/assets/codefulcrum_logo.jpeg' %}" alt="Company Logo" class="company-logo">
+                    <span class="company-name">Code Fulcrum</span>
+                </a>
+            </div>
+            <nav class="main-menu">
+                <ul>
+                    <li><a href="/employee_management">Home</a></li>
+                    <li><a href="/employee_management/events">Events</a></li>
+                    <li><a href="/employee_management/leaves">Leaves</a></li>
+                    <li><a href="/employee_management/profile">Profile</a></li>
+                </ul>
+            </nav>
+            <div class="profile-icon-container">
+                <i class="fas fa-user-circle profile-icon" id="profile-icon"></i>
+                <nav class="profile-menu" id="profile-menu">
+                    <ul>
+                        <li><a href="/employee_management/profile">Update Profile</a></li>
+                        <li><a href="/employee_management/logout">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Divider -->
+    <hr class="divider">
+
+    <main class="main-section">
+        <div class="table-container">
+            <h1>Allocated Leaves</h1>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Designation</th>
+                        <th>Annual Leaves</th>
+                        <th>Casual Leaves</th>
+                        <th>Medical Leaves</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in leaves %}
+                    <tr>
+                        <td>{{ leave.designation }}</td>
+                        <td>{{ leave.annual_leaves }}</td>
+                        <td>{{ leave.casual_leaves }}</td>
+                        <td>{{ leave.medical_leaves }}</td>
+                        <td>
+                            {% if 'update' in leaves_permissions %}
+                                <button class="btn btn-success" onclick="openEditModal('{{ leave.id }}', '{{ leave.designation }}', '{{ leave.annual_leaves }}', '{{ leave.casual_leaves }}', '{{ leave.medical_leaves }}')">Edit</button>
+                            {% endif %}
+                            {% if 'delete' in leaves_permissions %}
+                                <form method="POST" action="{% url 'leave_delete' leave.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Edit Leave Modal -->
+        <div id="editLeaveModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeEditModal()">&times;</span>
+                <h2>Edit Leave</h2>
+                <form method="POST" action="{% url 'leave_update' %}" id="editLeaveForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="leave_id" id="editLeaveId">
+                    <div>
+                        <label for="editDesignation">Designation:</label>
+                        <input type="text" id="editDesignation" name="designation" required>
+                    </div>
+                    <div>
+                        <label for="editAnnualLeaves">Annual Leaves:</label>
+                        <input type="number" id="editAnnualLeaves" name="annual_leaves" required>
+                    </div>
+                    <div>
+                        <label for="editCasualLeaves">Casual Leaves:</label>
+                        <input type="number" id="editCasualLeaves" name="casual_leaves" required>
+                    </div>
+                    <div>
+                        <label for="editMedicalLeaves">Medical Leaves:</label>
+                        <input type="number" id="editMedicalLeaves" name="medical_leaves" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Create New Leave -->
+        {% if 'create' in leaves_permissions %}
+        <div class="form-container">
+            <h2>Create New Allocated Leaves</h2>
+            <form method="post" action="{% url 'leave_create' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="designation">Designation:</label>
+                    <input type="text" id="designation" name="designation" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="annual_leaves">Annual Leaves:</label>
+                    <input type="number" id="annual_leaves" name="annual_leaves" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="casual_leaves">Casual Leaves:</label>
+                    <input type="number" id="casual_leaves" name="casual_leaves" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="medical_leaves">Medical Leaves:</label>
+                    <input type="number" id="medical_leaves" name="medical_leaves" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Leave</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if can_approve %}
+            <h3>Pending Leave Requests</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Reason</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in pending_leaves %}
+                        <tr>
+                            <td>{{ leave.employee_id.name }}</td>
+                            <td>{{ leave.leave_type }}</td>
+                            <td>{{ leave.start_date }}</td>
+                            <td>{{ leave.end_date }}</td>
+                            <td>{{ leave.reason }}</td>
+                            <td>
+                                <form method="POST" action="{% url 'leave_approve_reject' leave.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" name="action" value="approve" class="btn btn-success">Approve</button>
+                                    <button type="submit" name="action" value="reject" class="btn btn-danger">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <p>&copy; 2024 Code Fulcrum. All rights reserved.</p>
+            </div>
+            <div class="footer-right">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function openEditModal(leaveId, designation, annualLeaves, casualLeaves, medicalLeaves) {
+            document.getElementById('editLeaveId').value = leaveId;
+            document.getElementById('editDesignation').value = designation;
+            document.getElementById('editAnnualLeaves').value = annualLeaves;
+            document.getElementById('editCasualLeaves').value = casualLeaves;
+            document.getElementById('editMedicalLeaves').value = medicalLeaves;
+            document.getElementById('editLeaveModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editLeaveModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
