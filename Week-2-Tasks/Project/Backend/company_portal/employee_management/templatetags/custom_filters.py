@@ -16,8 +16,3 @@ def format_lunch_time(lunch_time):
     formatted_start_time = start_time.strftime('%I:%M %p')
     formatted_end_time = end_time.strftime('%I:%M %p')
     return f"{formatted_start_time} - {formatted_end_time}"
-
-
-@register.filter(name='format_lunch_time')
-def format_lunch_time(value):
-    return value.strftime('%I:%M %p')

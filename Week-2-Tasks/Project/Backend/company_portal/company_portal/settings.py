@@ -142,3 +142,15 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
 ]
 
+AUTH_USER_MODEL = 'employee_management.Employees'
+
+AUTHENTICATION_BACKENDS = [
+    'employee_management.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'profile'
+LOGOUT_REDIRECT_URL = 'login'
+

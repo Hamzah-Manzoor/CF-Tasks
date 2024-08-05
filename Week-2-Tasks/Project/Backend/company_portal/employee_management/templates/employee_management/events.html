@@ -1,43 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Events and Announcements</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'employee_management/css/events.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <!-- Header Section -->
-    <header>
-        <div class="header-container">
-            <div class="logo-container">
-                <a href="/employee_management">
-                    <img src="{% static 'employee_management/assets/codefulcrum_logo.jpeg' %}" alt="Company Logo" class="company-logo">
-                    <span class="company-name">Code Fulcrum</span>
-                </a>
-            </div>
-            <nav class="main-menu">
-                <ul>
-                    <li><a href="/employee_management">Home</a></li>
-                    <li><a href="/employee_management/events">Events</a></li>
-                    <li><a href="/employee_management/leaves">Leaves</a></li>
-                    <li><a href="/employee_management/profile">Profile</a></li>
-                </ul>
-            </nav>
-            <div class="profile-icon-container">
-                <i class="fas fa-user-circle profile-icon" id="profile-icon"></i>
-                <nav class="profile-menu" id="profile-menu">
-                    <ul>
-                        <li><a href="/employee_management/profile">Update Profile</a></li>
-                        <li><a href="/employee_management/login">Logout</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+{% extends 'base.html' %}
 
+{% block title %}Events - Employee Portal{% endblock %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'employee_management/css/events.css' %}">
+{% endblock %}
+
+{% block content %}
 
     <!-- Divider -->
     <hr class="divider">
@@ -49,16 +19,75 @@
             <h2>Upcoming Events</h2>
             <div id="events-container">
                 {% for event in upcoming_events %}
-                    <div class="event-card">
+                    <div class="event-card" data-event-id="{{ event.id }}">
                         <h3>{{ event.title }}</h3>
                         <p><strong>Date:</strong> {{ event.date }}</p>
                         <p><strong>Time:</strong> {{ event.time }}</p>
                         <p><strong>Details:</strong> {{ event.description }}</p>
+                        <!-- Edit Button -->
+                        {% if 'update' in user_permissions %}
+                            <button class="btn btn-success" onclick="openEditModal('{{ event.id }}', '{{ event.title }}', '{{ event.date }}', '{{ event.time }}', '{{ event.description }}')">Edit</button>
+                        {% endif %}
+                        {% if 'delete' in user_permissions %}
+                            <form action="{% url 'event_delete' event.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        {% endif %}
                     </div>
+
+                    <!-- Edit Event Modal -->
+                    <div id="editEventModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeEditModal()">&times;</span>
+                            <h2>Edit Event</h2>
+                            <form method="POST" action="{% url 'event_edit' event.id %}" id="editEventForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="event_id" id="editEventId">
+                                <div>
+                                    <label for="editEventTitle">Title:</label>
+                                    <input type="text" id="editEventTitle" name="title" required>
+                                </div>
+                                <div>
+                                    <label for="editEventDate">Date:</label>
+                                    <input type="date" id="editEventDate" name="date" required>
+                                </div>
+                                <div>
+                                    <label for="editEventTime">Time:</label>
+                                    <input type="text" id="editEventTime" name="time" required>
+                                </div>
+                                <div>
+                                    <label for="editEventDescription">Description:</label>
+                                    <textarea id="editEventDescription" name="description" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Event</button>
+                                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+
+
                 {% empty %}
                     <p>No upcoming events.</p>
                 {% endfor %}
             </div>
+            {% if 'create' in user_permissions %}
+                <div id="create-event-form">
+                    <h2>Create New Event</h2>
+                    <form action="{% url 'event_create' %}" method="post">
+                        {% csrf_token %}
+                        <label for="title">Title:</label>
+                        <input type="text" id="title_create" name="title" required>
+                        <label for="date">Date:</label>
+                        <input type="date" id="date_create" name="date" required>
+                        <label for="time">Time:</label>
+                        <input type="text" id="time_create" name="time" required>
+                        <label for="description">Description:</label>
+                        <textarea id="description_create" name="description" required></textarea>
+                        <button type="submit" class="btn btn-primary">Create Event</button>
+                    </form>
+                </div>
+            {% endif %}
         </section>
         <section class="announcements-section">
             <h2>Announcements</h2>
@@ -76,57 +105,23 @@
         </section>
     </main>
 
+    <script>
+        function openEditModal(eventId, eventTitle, eventDate, eventTime, eventDescription) {
+            document.getElementById('editEventId').value = eventId;
+            document.getElementById('editEventTitle').value = eventTitle;
+            document.getElementById('editEventDate').value = eventDate;
+            document.getElementById('editEventTime').value = eventTime;
+            document.getElementById('editEventDescription').value = eventDescription;
+            document.getElementById('editEventModal').style.display = 'block';
+        }
 
-    <footer>
-        <div class="footer-container">
-            <div class="footer-left">
-                <p>&copy; 2024 Code Fulcrum. All rights reserved.</p>
-            </div>
-            <div class="footer-right">
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
-            </div>
-        </div>
-    </footer>
-    
+        function closeEditModal() {
+            document.getElementById('editEventModal').style.display = 'none';
+        }
+    </script>
+
 
     <!-- JavaScript -->
     <script src="{% static 'employee_management/js/events.js' %}"></script>
 
-    <!-- Script to fetch and display Events and announcements -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const eventsContainer = document.getElementById('events-container');
-            const announcementsContainer = document.getElementById('announcements-container');
-    
-            fetch('http://localhost:8000/employee_management/events')
-                .then(response => response.json())
-                .then(events => {
-                    eventsContainer.innerHTML = events.map(event => `
-                        <div class="event-card">
-                            <h3>${event.title}</h3>
-                            <p><strong>Date:</strong> ${event.date}</p>
-                            <p><strong>Time:</strong> ${event.time}</p>
-                            <p><strong>Details:</strong> ${event.description}</p>
-                        </div>
-                    `).join('');
-                })
-                .catch(error => console.error('Error fetching events:', error));
-    
-            fetch('http://localhost:8000/employee_management/announcements')
-                .then(response => response.json())
-                .then(announcements => {
-                    announcementsContainer.innerHTML = announcements.map(announcement => `
-                        <div class="announcement-card">
-                            <h3>${announcement.title}</h3>
-                            <p><strong>Date:</strong> ${announcement.date}</p>
-                            <p><strong>Details:</strong> ${announcement.details}</p>
-                        </div>
-                    `).join('');
-                })
-                .catch(error => console.error('Error fetching announcements:', error));
-        });
-    </script>
-    
-</body>
-</html>
+{% endblock %}
