@@ -241,22 +241,39 @@
     <script src="js/index.js"></script>
 
     <!-- Fetching the name of the employee to display it on Header -->
+<!--    <script>-->
+<!--        document.addEventListener('DOMContentLoaded', function() {-->
+<!--            fetch('http://localhost:3000/employees?employeeId=E001')-->
+<!--                .then(response => response.json())-->
+<!--                .then(employees => {-->
+<!--                    if (employees.length > 0) {-->
+<!--                        const firstEmployee = employees[0];-->
+<!--                        const employeeNameContainer = document.getElementById('employee-name');-->
+<!--                        employeeNameContainer.textContent = firstEmployee.name;-->
+<!--                    } else {-->
+<!--                        console.error('No employees found');-->
+<!--                    }-->
+<!--                })-->
+<!--                .catch(error => console.error('Error:', error));-->
+<!--        });-->
+<!--    </script>-->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('http://localhost:3000/employees?employeeId=E001')
-                .then(response => response.json())
-                .then(employees => {
-                    if (employees.length > 0) {
-                        const firstEmployee = employees[0];
-                        const employeeNameContainer = document.getElementById('employee-name');
-                        employeeNameContainer.textContent = firstEmployee.name;
-                    } else {
-                        console.error('No employees found');
+            fetch('http://localhost:8000/employee_management/employees/1/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
                     }
+                    return response.json();
+                })
+                .then(employee => {
+                    const employeeNameContainer = document.getElementById('employee-name');
+                    employeeNameContainer.textContent = employee.name;
                 })
                 .catch(error => console.error('Error:', error));
         });
     </script>
+
 
     <!-- Employees that have birthdays in the next 60 days -->
     <script>
@@ -265,7 +282,7 @@
             const today = new Date();
             const upcomingBirthdays = [];
 
-            fetch('http://localhost:3000/employees')
+            fetch('http://localhost:8000/employee_management/employees')
                 .then(response => response.json())
                 .then(employees => {
                     employees.forEach(employee => {
@@ -318,7 +335,7 @@
             }
 
             // Fetch events and display the nearest two future events
-            fetch('http://localhost:3000/events')
+            fetch('http://localhost:8000/employee_management/events')
                 .then(response => response.json())
                 .then(events => {
                     const now = new Date();
@@ -332,7 +349,7 @@
                 .catch(error => console.error('Error fetching events:', error));
 
             // Fetch announcements and display the two most recent past announcements
-            fetch('http://localhost:3000/announcements')
+            fetch('http://localhost:8000/employee_management/announcements')
                 .then(response => response.json())
                 .then(announcements => {
                     const now = new Date();
@@ -351,14 +368,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Fetch employee leave details
-            fetch('http://localhost:3000/employees?employeeId=E001')
+            fetch('http://localhost:8000/employee_management/employees/1/')
                 .then(response => response.json())
                 .then(employee => {
                     //document.querySelector('.leave-details .leave-item:nth-child(1) .leave-value').textContent = 20;
-                    //console.log(employee[0].name)
-                    document.querySelector('.leave-details .leave-item:nth-child(1) .leave-value').textContent = employee[0].totalAnnualLeaves;
-                    document.querySelector('.leave-details .leave-item:nth-child(2) .leave-value').textContent = employee[0].leavesTaken;
-                    document.querySelector('.leave-details .leave-item:nth-child(3) .leave-value').textContent = employee[0].totalAnnualLeaves - employee[0].leavesTaken;
+                    //console.log(employee.name)
+                    document.querySelector('.leave-details .leave-item:nth-child(1) .leave-value').textContent = employee.total_annual_leaves;
+                    document.querySelector('.leave-details .leave-item:nth-child(2) .leave-value').textContent = employee.leaves_taken;
+                    document.querySelector('.leave-details .leave-item:nth-child(3) .leave-value').textContent = employee.total_annual_leaves - employee.leaves_taken;
                 })
                 .catch(error => console.error('Error fetching employee leave details:', error));
         });
