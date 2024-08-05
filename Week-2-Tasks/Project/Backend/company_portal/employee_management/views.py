@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.views import View
 from .const import role_permissions
 from .forms import UserCreationForm
+from django.db import IntegrityError
 from django.views.decorators.http import require_POST
 
 
@@ -25,6 +26,7 @@ logger = logging.getLogger(__name__)
 @login_required
 def index(request):
     logged_employee = request.user
+    employee_name = request.user.name
 
     # Fetch all employees
     employees = Employees.objects.all()
@@ -57,8 +59,8 @@ def index(request):
     fridays_since_start = sum(1 for day in range(days_since_start + 1) if (start_date + timedelta(days=day)).weekday() == 4)
     weekdays_since_start -= fridays_since_start
 
-    weekday_lunch_iterator = (weekdays_since_start % 15) + 2 if weekdays_since_start % 15 else 17
-    friday_lunch_iterator = (fridays_since_start % 2) if fridays_since_start % 2 else 2
+    weekday_lunch_iterator = (weekdays_since_start % admin.weekday_lunch_iterator) + admin.friday_lunch_iterator if weekdays_since_start % admin.weekday_lunch_iterator else admin.weekday_lunch_iterator + admin.friday_lunch_iterator
+    friday_lunch_iterator = (fridays_since_start % admin.friday_lunch_iterator) if fridays_since_start % admin.friday_lunch_iterator else admin.friday_lunch_iterator
 
     day_of_week = today.weekday()
     menu_item = "Weekend"
@@ -81,6 +83,7 @@ def index(request):
     # Context to be passed to the template
     context = {
         'employee': logged_employee,
+        'employee_name': employee_name,
         'events': upcoming_events,
         'announcements': recent_announcements,
         'upcoming_birthdays': upcoming_birthdays,
@@ -134,10 +137,13 @@ def events(request):
     recent_announcements = Announcements.objects.all().order_by('-date')
     user_permissions = role_permissions[request.user.role]['Events']
 
+    employee_name = request.user.name
+
     context = {
         'upcoming_events': upcoming_events,
         'recent_announcements': recent_announcements,
-        'user_permissions': user_permissions
+        'user_permissions': user_permissions,
+        'employee_name': employee_name
     }
 
     return render(request, 'employee_management/events.html', context)
@@ -178,7 +184,6 @@ def event_edit(request, event_id):
             })
 
 
-
 @login_required
 def event_delete(request, event_id):
     if request.method == 'POST':
@@ -187,12 +192,12 @@ def event_delete(request, event_id):
         return redirect('events')
 
 
-
 @login_required
 def leaves(request):
     employee_id = request.user.id  # Change this to the specific employee ID you want to fetch
     employee = Employees.objects.get(id=employee_id)
     allocated_leaves = get_object_or_404(AllocatedLeaves, designation=employee.position)
+    employee_name = request.user.name
 
     if request.method == 'POST':
         leave_type = request.POST.get('leave-type')
@@ -249,6 +254,7 @@ def leaves(request):
     context = {
         'employee': employee,
         'allocated_leaves': allocated_leaves,
+        'employee_name': employee_name
     }
 
     return render(request, 'leaves.html', context)
@@ -259,6 +265,7 @@ def manage_leaves(request):
     user_role = request.user.role
     permissions = role_permissions.get(user_role, {})
     allocated_leaves = AllocatedLeaves.objects.all()
+    employee_name = request.user.name
     pending_leaves = LeavesTaken.objects.filter(status='Pending')
 
     can_approve = 'approve' in permissions.get('Leaves Approve', [])
@@ -268,6 +275,7 @@ def manage_leaves(request):
         'leaves_permissions': permissions.get('Leaves Count', []),
         'pending_leaves': pending_leaves,
         'can_approve': can_approve,
+        'employee_name': employee_name
     }
 
     return render(request, 'manage_leaves.html', context)
@@ -328,6 +336,7 @@ def leave_approve_reject(request, leave_id):
 def profile(request):
     employee_id = request.user.id  # Replace with the logic to get the current employee's ID
     employee = get_object_or_404(Employees, id=employee_id)
+    employee_name = request.user.name
 
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -341,7 +350,7 @@ def profile(request):
         else:
             return JsonResponse({'success': False, 'error': 'Please fill out all fields.'})
 
-    return render(request, 'profile.html', {'employee': employee})
+    return render(request, 'profile.html', {'employee': employee, 'employee_name': employee_name})
 
 
 def signup(request):
@@ -381,24 +390,18 @@ def logout(request):
     return redirect('login')
 
 
-class UsersView(View):
-    template_name = 'users.html'
-
-    def get(self, request):
-        employees = Employees.objects.all()
-        return render(request, self.template_name, {'employees': employees})
-
-
 @login_required
 def user_list(request):
     users = Employees.objects.all()
     user_role = request.user.role
+    employee_name = request.user.name
 
     user_permissions = role_permissions.get(user_role, {}).get('Users', [])
 
     context = {
         'users': users,
         'user_permissions': user_permissions,
+        'employee_name': employee_name
     }
     return render(request, 'employee_management/users.html', context)
 
@@ -406,9 +409,18 @@ def user_list(request):
 @login_required()
 def users_create(request):
     if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        if Employees.objects.filter(email=email).exists():
+            messages.error(request, 'Email already exists')
+            return redirect(reverse('user_list'))
+
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.set_password(password)
+            user.save()
             return redirect(reverse('user_list'))
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
@@ -445,6 +457,7 @@ def users_delete(request, id):
 def manage_lunch_menu(request):
     user_role = request.user.role
     permissions = role_permissions.get(user_role, {})
+    employee_name = request.user.name
 
     admin = Admin.objects.first()
     all_dishes = LunchMenu.objects.all()
@@ -457,6 +470,7 @@ def manage_lunch_menu(request):
         'friday_lunch': friday_lunch,
         'weekday_lunch': weekday_lunch,
         'lunch_menu_permissions': permissions.get('Lunch Menu', []),
+        'employee_name': employee_name
     }
 
     return render(request, 'manage_lunch_menu.html', context)
@@ -505,6 +519,7 @@ def delete_lunch_menu(request):
 def manage_projects(request):
     user_role = request.user.role
     project_permissions = role_permissions.get(user_role, {}).get('Projects', [])
+    employee_name = request.user.name
 
     can_create = 'create' in project_permissions
     can_update = 'update' in project_permissions
@@ -520,6 +535,7 @@ def manage_projects(request):
         'can_create': can_create,
         'can_update': can_update,
         'can_delete': can_delete,
+        'employee_name': employee_name,
     }
 
     return render(request, 'projects.html', context)
@@ -586,6 +602,7 @@ def manage_feedback(request):
     user = request.user
     role = user.role
     permissions = role_permissions.get(role, {}).get('Feedback', [])
+    employee_name = request.user.name
 
     if role in ['S-HR', 'J-HR']:
         feedbacks = Feedback.objects.all()
@@ -595,6 +612,7 @@ def manage_feedback(request):
     context = {
         'feedbacks': feedbacks,
         'user': user,
+        'employee_name': employee_name,
         'perms': {
             'feedback': {
                 'create': 'create' in permissions,
@@ -613,12 +631,43 @@ def add_feedback(request):
     print("-----------------------------------------")
     print("You are in add feedback")
     print("-----------------------------------------")
-    print("-----------------------------------------")
     if request.method == 'POST':
         employee_id = request.POST.get("employee_id")
         feedback_text = request.POST.get('feedback')
-        Feedback.objects.create(employee_id=employee_id, feedback=feedback_text)
-        return redirect('manage_feedback')
+
+        try:
+            Feedback.objects.create(employee_id=employee_id, feedback=feedback_text)
+            return redirect('manage_feedback')
+        except IntegrityError as e:
+            print(f"IntegrityError: {e}")
+
+            user = request.user
+            role = user.role
+            permissions = role_permissions.get(role, {}).get('Feedback', [])
+            employee_name = request.user.name
+
+            if role in ['S-HR', 'J-HR']:
+                feedbacks = Feedback.objects.all()
+            else:
+                feedbacks = Feedback.objects.filter(employee=user)
+
+            context = {
+                'feedbacks': feedbacks,
+                'user': user,
+                'employee_name': employee_name,
+                'error_message': 'Failed to add feedback. Please ensure the Employee ID is valid.',
+                'perms': {
+                    'feedback': {
+                        'create': 'create' in permissions,
+                        'read': 'read' in permissions,
+                        'update': 'update' in permissions,
+                        'delete': 'delete' in permissions,
+                    }
+                }
+            }
+
+            return render(request, 'feedback.html', context)
+
     return redirect('manage_feedback')
 
 

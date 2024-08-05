@@ -1,48 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for Leave</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'employee_management/css/users.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <!-- Header Section -->
-    <header>
-        <div class="header-container">
-            <div class="logo-container">
-                <a href="/employee_management">
-                    <img src="{% static 'employee_management/assets/codefulcrum_logo.jpeg' %}" alt="Company Logo" class="company-logo">
-                    <span class="company-name">Code Fulcrum</span>
-                </a>
-            </div>
-            <nav class="main-menu">
-                <ul>
-                    <li><a href="/employee_management">Home</a></li>
-                    <li><a href="/employee_management/events">Events</a></li>
-                    <li><a href="/employee_management/leaves">Leaves</a></li>
-                    <li><a href="/employee_management/profile">Profile</a></li>
-                </ul>
-            </nav>
-            <div class="profile-icon-container">
-                <i class="fas fa-user-circle profile-icon" id="profile-icon"></i>
-                <nav class="profile-menu" id="profile-menu">
-                    <ul>
-                        <li><a href="/employee_management/profile">Update Profile</a></li>
-                        <li><a href="/employee_management/logout">Logout</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+{% extends 'base.html' %}
+
+{% block title %}Users - Employee Portal{% endblock %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'employee_management/css/users.css' %}">
+{% endblock %}
+
+{% block content %}
 
     <!-- Divider -->
     <hr class="divider">
 
     <main class="main-section">
-        {% block content %}
         <div class="table-container">
             <h1>User List</h1>
             <table class="user-table">
@@ -118,6 +88,16 @@
                 <div class="form-group">
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" class="form-control" required>
+
+                    {% if messages %}
+                        <div class="error-messages">
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                    <p style="color: red;" class="error">{{ message }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="form-group">
                     <label for="password">Password:</label>
@@ -151,24 +131,11 @@
                         <option value="Employee">Employee</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Create User</button>
+                <button type="submit" class="btn btn-primary btn-create-user">Create User</button>
             </form>
         </div>
         {% endif %}
-        {% endblock %}
     </main>
-
-    <footer>
-        <div class="footer-container">
-            <div class="footer-left">
-                <p>&copy; 2024 Code Fulcrum. All rights reserved.</p>
-            </div>
-            <div class="footer-right">
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
-            </div>
-        </div>
-    </footer>
 
     <script>
         function openEditModal(userId, userName, userPosition) {
@@ -183,8 +150,4 @@
         }
     </script>
 
-    <!-- JavaScript -->
-<!--    <script src="{% static 'employee_management/js/leaves.js' %}"></script>-->
-
-</body>
-</html>
+{% endblock %}

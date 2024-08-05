@@ -7,26 +7,23 @@ from . import views
 
 urlpatterns = [
     path('', index, name='index'),
-    path('events/', events, name='events'),
-    path('leaves/', leaves, name='leaves'),
-    path('profile/', profile, name='profile'),
+
     path('login/', login, name='login'),
-    path('signup/', signup, name='signup'),
-    path('like_lunch/', like_lunch, name='like_lunch'),
-    # path('dislike_lunch/', dislike_lunch, name='dislike_lunch'),
-    # path('like-dislike-status/', like_dislike_status, name='like_dislike_status'),
     path('logout/', logout, name='logout'),
+    path('signup/', signup, name='signup'),
+    path('profile/', profile, name='profile'),
+
     path('users/', views.user_list, name='user_list'),
     path('users/create/', views.users_create, name='users_create'),
     path('users/delete/<int:id>/', views.users_delete, name='users_delete'),
-    # path('users/<int:id>/', views.user_detail, name='user_detail'),
     path('users/update/', views.user_update, name='user_update'),
-    # path('users/edit/<int:id>/', views.user_edit, name='user_edit'),
 
+    path('events/', events, name='events'),
     path('events/create/', views.event_create, name='event_create'),
     path('events/edit/<int:event_id>/', views.event_edit, name='event_edit'),
     path('events/delete/<int:event_id>/', views.event_delete, name='event_delete'),
 
+    path('leaves/', leaves, name='leaves'),
     path('manage_leaves/', views.manage_leaves, name='manage_leaves'),
     path('leaves/create/', views.create_leave, name='leave_create'),
     path('leaves/update/', views.update_leave, name='leave_update'),
@@ -38,6 +35,7 @@ urlpatterns = [
     path('manage_lunch_menu/create/', views.lunch_menu_create, name='lunch_menu_create'),
     path('manage_lunch_menu/update/', views.update_lunch_menu, name='lunch_menu_update'),
     path('manage_lunch_menu/delete/', views.delete_lunch_menu, name='lunch_menu_delete'),
+    path('like_lunch/', like_lunch, name='like_lunch'),
 
     path('projects/', views.manage_projects, name='manage_projects'),
     path('projects/add/', views.add_project, name='add_project'),
